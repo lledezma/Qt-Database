@@ -1,7 +1,7 @@
 #include "database.h"
 
 
-Database::Database(QString database, QString dbName, QObject *parent) : QObject(parent)
+Database::Database(QString database, QString dbName, QString table, QObject *parent) : QObject(parent)
 {
     db = QSqlDatabase::addDatabase(database);
     db.setDatabaseName(dbName);
