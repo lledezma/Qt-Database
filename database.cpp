@@ -13,6 +13,8 @@ Database::Database(QString database, QString dbName, QString table, QObject *par
     } else {
         qDebug() << "Database connection successful!";
     }
+
+    this->table = table;
 }
 
 Database::~Database()
@@ -21,10 +23,12 @@ Database::~Database()
     db.close();
 }
 
-void Database::selectAll(QString table)
+void Database::selectAll()
 {
-    QString cmd = "SELECT * FROM " + table;
+    QString cmd = "SELECT * FROM `"+table+"`";
     QSqlQuery query(cmd);
+
+    qDebug() << query.executedQuery();
     bool ok = query.exec();
 
     if(!ok){
