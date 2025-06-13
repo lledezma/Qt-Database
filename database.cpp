@@ -47,3 +47,61 @@ void Database::selectAll()
 
 }
 
+void Database::dropRecord(QString column, QString value)
+{
+    QSqlQuery query;
+    QString cmd = "DELETE FROM `"+table+"` WHERE "+column+" = :value";
+    query.prepare(cmd);
+    query.bindValue(":value", value);
+
+
+    bool ok = query.exec();
+
+    qDebug() <<  query.executedQuery();
+    if(!ok){
+        qDebug() << "Query " + query.executedQuery() + " not executed";
+        return;
+    }
+
+}
+
+void Database::addRecord(QStringList values)
+{
+    QSqlQuery query("SELECT * FROM `"+table+"` LIMIT 1");
+    QString insert("INSERT INTO `"+table+"` (");
+    QStringList columns;
+
+
+    if(query.exec()){
+        int numColumns = query.record().count();
+
+        for(int column = 0; column < numColumns; column++){
+            columns.append(query.record().fieldName(column));
+            if(column != numColumns-1)
+                insert.append(query.record().fieldName(column)+",");
+            else
+                insert.append(query.record().fieldName(column)+") VALUES (");
+        }
+
+        for(int column = 0; column < numColumns; column++){
+            if(column != numColumns-1)
+                insert.append(":"+columns.at(column)+",");
+            else
+                insert.append(":"+columns.at(column)+");");
+        }
+
+        query.prepare(insert);
+        for(int column = 0; column < numColumns; column++){
+            query.bindValue(":"+columns.at(column), values.at(column));
+        }
+
+        qInfo() << query.executedQuery();
+
+    }else{
+        qDebug() << query.lastError().text();
+    }
+
+    if(!query.exec()){
+        qDebug() << query.lastError().text();
+    }
+}
