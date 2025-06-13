@@ -10,7 +10,9 @@ int main(int argc, char *argv[])
 
     QString database = "";
     QString dbName = "";
-    Database db(database, dbName, nullptr);
+    QString table = "";
+    Database db(database, dbName, table, nullptr);
+
     db.selectAll("");
 
 
